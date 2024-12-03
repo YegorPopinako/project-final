@@ -8,19 +8,49 @@ from PROFILE;
 
 delete
 from ACTIVITY;
-ALTER TABLE ACTIVITY ALTER COLUMN ID RESTART WITH 1;
+ALTER TABLE ACTIVITY
+    ALTER COLUMN ID RESTART WITH 1;
 delete
 from TASK;
-ALTER TABLE TASK ALTER COLUMN ID RESTART WITH 1;
+ALTER TABLE TASK
+    ALTER COLUMN ID RESTART WITH 1;
 delete
 from SPRINT;
-ALTER TABLE SPRINT ALTER COLUMN ID RESTART WITH 1;
+ALTER TABLE SPRINT
+    ALTER COLUMN ID RESTART WITH 1;
 delete
 from PROJECT;
-ALTER TABLE PROJECT ALTER COLUMN ID RESTART WITH 1;
+ALTER TABLE PROJECT
+    ALTER COLUMN ID RESTART WITH 1;
 delete
 from USERS;
-ALTER TABLE USERS ALTER COLUMN ID RESTART WITH 1;
+ALTER TABLE USERS
+    ALTER COLUMN ID RESTART WITH 1;
+
+delete
+from REFERENCE;
+ALTER TABLE REFERENCE
+    ALTER COLUMN ID RESTART WITH 1;
+
+insert into REFERENCE (CODE, TITLE, REF_TYPE, AUX)
+values
+-- MAIL_NOTIFICATION
+('assigned', 'Assigned', 6, '1'),
+('three_days_before_deadline', 'Three days before deadline', 6, '2'),
+('two_days_before_deadline', 'Two days before deadline', 6, '4'),
+('one_day_before_deadline', 'One day before deadline', 6, '8'),
+('deadline', 'Deadline', 6, '16'),
+('overdue', 'Overdue', 6, '32');
+
+INSERT INTO REFERENCE (CODE, TITLE, REF_TYPE)
+VALUES
+    ('skype', 'Skype', 0),
+    ('tg', 'Telegram', 0),
+    ('mobile', 'Mobile', 0),
+    ('phone', 'Phone', 0),
+    ('website', 'Website', 0),
+    ('linkedin', 'LinkedIn', 0),
+    ('github', 'GitHub', 0);
 
 insert into USERS (EMAIL, PASSWORD, FIRST_NAME, LAST_NAME, DISPLAY_NAME)
 values ('user@gmail.com', '{noop}password', 'userFirstName', 'userLastName', 'userDisplayName'),
