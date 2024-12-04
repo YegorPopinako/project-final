@@ -40,7 +40,6 @@ public class TaskController {
     private final Handlers.ActivityHandler activityHandler;
     private final UserBelongRepository userBelongRepository;
 
-
     @GetMapping("/{id}")
     public TaskToFull get(@PathVariable long id) {
         log.info("get task by id={}", id);
