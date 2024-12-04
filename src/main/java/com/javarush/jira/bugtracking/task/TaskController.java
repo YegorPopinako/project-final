@@ -75,6 +75,13 @@ public class TaskController {
         return handler.getMapper().toToList(handler.getRepository().findAllByProjectId(projectId));
     }
 
+    @PostMapping("/{taskId}/tags")
+    @ResponseStatus(HttpStatus.OK)
+    public void addTagsToTAsk(@PathVariable Long taskId,
+                              @RequestParam String tag) {
+        taskService.addTag(taskId, tag);
+    }
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Task> createWithLocation(@Valid @RequestBody TaskToExt taskTo) {
