@@ -8,6 +8,18 @@ app:
     max-pool-size: 100
 
 spring:
+  messages:
+    basename: localization/messages
+    encoding: UTF-8
+  thymeleaf:
+    mode: HTML
+    cache: false
+  web:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
   init:
     mode: never
   jpa:
@@ -26,9 +38,9 @@ spring:
         # https://stackoverflow.com/questions/21257819/what-is-the-difference-between-hibernate-jdbc-fetch-size-and-hibernate-jdbc-batc
         jdbc.batch_size: 20
   datasource:
-      url: ${DB_URL}
-      username: ${DB_USERNAME}
-      password: ${DB_PASSWORD}
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
   liquibase:
     changeLog: "classpath:db/changelog.sql"

@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>JiraRush - подтверждение почты</title>
+    <title th:text="#{mail.confirmation.subject}"></title>
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
 </head>
 <body>
-<p th:text="'Привет, ' + ${user.firstName} + '.'"/>
-<p>Чтобы завершить настройку учетной записи и начать пользоваться JiraRush, подтвердите, что вы правильно указали вашу
-    электронную почту.</p>
-<a th:href="${confirmationUrl}">Подтвердить почту</a>
+<p th:text="#{mail.confirmation.greeting(${user.firstName})}"></p>
+<p th:text="#{mail.confirmation.message}"></p>
+<a th:href="${confirmationUrl}" th:text="#{mail.confirmation.action}"></a>
 </body>
 </html>
