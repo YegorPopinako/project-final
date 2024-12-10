@@ -14,6 +14,7 @@ import com.javarush.jira.common.error.NotFoundException;
 import com.javarush.jira.common.util.Util;
 import com.javarush.jira.login.AuthUser;
 import com.javarush.jira.ref.RefType;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,6 +85,17 @@ public class TaskService {
             handler.updateFromTo(taskTo, id);
             activityHandler.create(makeActivity(id, taskTo));
         }
+    }
+
+    @Transactional
+    public void addTag(Long taskId, String tag) {
+        if (tag == null || tag.length() < 2 || tag.length() > 32) {
+            throw new IllegalArgumentException("Tag must be between 2 and 32 characters long.");
+        }
+        Task task = handler.getRepository().findById(taskId)
+                .orElseThrow(() -> new EntityNotFoundException("Task not found"));
+        task.getTags().add(tag);
+        handler.getRepository().save(task);
     }
 
     public TaskToFull get(long id) {

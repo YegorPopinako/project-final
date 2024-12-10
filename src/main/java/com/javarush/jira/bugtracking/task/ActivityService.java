@@ -5,13 +5,18 @@ import com.javarush.jira.bugtracking.task.to.ActivityTo;
 import com.javarush.jira.common.error.DataConflictException;
 import com.javarush.jira.login.AuthUser;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.javarush.jira.bugtracking.task.TaskUtil.getLatestValue;
+import static java.util.Objects.isNull;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ActivityService {
@@ -23,6 +28,34 @@ public class ActivityService {
         if (activity.getAuthorId() != AuthUser.authId()) {
             throw new DataConflictException("Activity " + activity.getId() + " doesn't belong to " + AuthUser.get());
         }
+    }
+
+    public Integer getTimeInProgress(Long taskId) {
+        List<Activity> activities = handler.getRepository().findByTaskId(taskId);
+
+        LocalDateTime inProgressTime = getActivityTime(activities, "in_progress");
+        LocalDateTime readyForReviewTime = getActivityTime(activities, "ready_for_review");
+
+        if (isNull(inProgressTime) || isNull(readyForReviewTime)) {
+            throw new IllegalStateException("Missing required status for task: " + taskId);
+        }
+
+        Duration duration = Duration.between(inProgressTime, readyForReviewTime);
+        return (int) duration.toHours();
+    }
+
+    public Integer getTimeInTesting(Long taskId) {
+        List<Activity> activities = handler.getRepository().findByTaskId(taskId);
+
+        LocalDateTime readyForReviewTime = getActivityTime(activities, "ready_for_review");
+        LocalDateTime doneTime = getActivityTime(activities, "done");
+
+        if (isNull(readyForReviewTime) || isNull(doneTime)) {
+            throw new IllegalStateException("Missing required status for task: " + taskId);
+        }
+
+        Duration duration = Duration.between(readyForReviewTime, doneTime);
+        return (int) duration.toHours();
     }
 
     @Transactional
@@ -72,5 +105,13 @@ public class ActivityService {
                 task.setTypeCode(latestType);
             }
         }
+    }
+
+    private LocalDateTime getActivityTime(List<Activity> activities, String statusCode) {
+        return activities.stream()
+                .filter(activity -> statusCode.equals(activity.getStatusCode()))
+                .map(Activity::getUpdated)
+                .findFirst()
+                .orElse(null);
     }
 }

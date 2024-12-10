@@ -40,7 +40,6 @@ public class TaskController {
     private final Handlers.ActivityHandler activityHandler;
     private final UserBelongRepository userBelongRepository;
 
-
     @GetMapping("/{id}")
     public TaskToFull get(@PathVariable long id) {
         log.info("get task by id={}", id);
@@ -73,6 +72,13 @@ public class TaskController {
     public List<TaskTo> getAllByProject(@RequestParam long projectId) {
         log.info("get all for project {}", projectId);
         return handler.getMapper().toToList(handler.getRepository().findAllByProjectId(projectId));
+    }
+
+    @PostMapping("/{taskId}/tags")
+    @ResponseStatus(HttpStatus.OK)
+    public void addTagsToTAsk(@PathVariable Long taskId,
+                              @RequestParam String tag) {
+        taskService.addTag(taskId, tag);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
